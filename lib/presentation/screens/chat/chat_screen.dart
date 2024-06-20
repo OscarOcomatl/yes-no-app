@@ -1,6 +1,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
 import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/shared/message_field_box.dart';
@@ -34,6 +37,9 @@ class _ChatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final chatProvider = context.watch<ChatProvider>(); // Va a estar escuchando los cambios que tenga la instancia de esa clase
+
     return SafeArea(
       // Un padding para que el contenido fuera del widget no esté pegado
       child: Padding(
@@ -43,11 +49,15 @@ class _ChatView extends StatelessWidget {
             // Permite expandir el hijo a todo el espacio disponible
             Expanded(
               child: ListView.builder(
-                itemCount: 100,
+                itemCount: chatProvider.messages.length,
                 itemBuilder: (_,index ) {
-                  return ( index % 2 == 0)
-                    ? const HerMessageBubble()
-                    : const MyMessageBubble();
+                  final message = chatProvider.messages[index];
+                  return (message.fromWho == FromWho.hers)
+                    ? HerMessageBubble()
+                    : MyMessageBubble(message: message,);
+                  // return ( index % 2 == 0)
+                    // ? const HerMessageBubble()
+                    // : const MyMessageBubble();
                 }
               )
             ),

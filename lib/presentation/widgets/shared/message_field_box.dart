@@ -8,6 +8,10 @@ class MessageFieldBox extends StatelessWidget {
 
     // final colors = Theme.of(context).colorScheme;
 
+    final textController = TextEditingController();
+
+    final focusNode = FocusNode();
+
     final outlineInputBorder = UnderlineInputBorder(
       borderSide: const BorderSide(
         color: Colors.transparent
@@ -16,25 +20,37 @@ class MessageFieldBox extends StatelessWidget {
     );
 
     final inputDecoration = InputDecoration(
+        hintText: 'End your message with a "?"',
         enabledBorder: outlineInputBorder,
         focusedBorder: outlineInputBorder,
         filled: true,
         suffixIcon: IconButton(
           onPressed: (){
-            print('valor de la caja de texto');
+            final textValue = textController.value.text;
+
+            print('valor de text value: $textValue');
+
+            textController.clear();
           }, 
           icon: const Icon(Icons.send_outlined)
         )
       );
 
     return TextFormField(
+      onTapOutside: (event){
+        focusNode.unfocus();
+      },
+      focusNode: focusNode,
+      controller: textController,
       decoration: inputDecoration,
       onFieldSubmitted: (value){
         print('SUBMIT VALUE: $value');
+        textController.clear();
+        focusNode.requestFocus();
       },
-      onChanged: (value){
-        print('changed: $value');
-      },
+      // onChanged: (value){
+      //   print('changed: $value');
+      // },
     );
   }
 }
